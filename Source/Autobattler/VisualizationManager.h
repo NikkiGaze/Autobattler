@@ -33,4 +33,7 @@ protected:
 
 	UPROPERTY()
 	int NextPosition;
+	
+	UPROPERTY()
+	FVector CurrentOffsetVector;
 };

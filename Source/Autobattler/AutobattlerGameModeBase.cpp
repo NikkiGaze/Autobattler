@@ -1,7 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "VisualizationManager.h"
 #include "AutobattlerGameModeBase.h"
+
+#include "VisualizationManager.h"
+
 
 void AAutobattlerGameModeBase::BeginPlay()
 {
@@ -10,6 +12,7 @@ void AAutobattlerGameModeBase::BeginPlay()
 	VisualizationManager = Cast<AVisualizationManager>(GetWorld()->SpawnActor(AVisualizationManager::StaticClass()));
 	VisualizationManager->InitialSpawn(UnitClass);
 
-	GetWorldTimerManager().SetTimer(SimulationTimerHandle, []
-		{}, 5.f, true);
+	GetWorldTimerManager().SetTimer(SimulationTimerHandle, [this]
+		{Tick++, VisualizationManager->OnSimulationTick(Tick);},
+		5.f, true);
 }

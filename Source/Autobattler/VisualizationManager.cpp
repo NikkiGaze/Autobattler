@@ -20,20 +20,34 @@ void AVisualizationManager::BeginPlay()
 void AVisualizationManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	UnitActor->SetActorLocation(UnitActor->GetActorLocation() + CurrentOffsetVector * DeltaTime);
+	// UE_LOG(LogTemp, Log, TEXT("%f, %f"), DeltaTime, GetWorld()->GetDeltaSeconds());
 }
 
 void AVisualizationManager::InitialSpawn(TSubclassOf<AActor> UnitClass)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
-
-	FActorSpawnParameters Params;
-	FVector SpawnLocation = FVector(0.f, 0.f, 0.f); 
-	FRotator SpawnRotation = FRotator(0.f, 0.f, 0.f);
+	// FActorSpawnParameters Params;
+	// FVector SpawnLocation = FVector(0.f, 0.f, 0.f); 
+	// FRotator SpawnRotation = FRotator(0.f, 0.f, 0.f);
 	// GetWorld()->SpawnActor(UnitClass, SpawnLocation, SpawnRotation, Params);
 	UnitActor = GetWorld()->SpawnActor(UnitClass);
 }
 
 void AVisualizationManager::OnSimulationTick(int NewPosition)
 {
+	//Calc new position in world coordinates
+	const int CellSize = 50;
+
+	OldPosition = NextPosition;
+	NextPosition = NewPosition;
+
+	if (const int CellDiff = NewPosition != OldPosition;
+		CellDiff != 0)
+	{
+		const FVector OldPositionVector = FVector(CellSize * OldPosition, 0, 0);
+		const FVector NewPositionVector = FVector(CellSize * NextPosition, 0, 0);
+		CurrentOffsetVector = (NewPositionVector - OldPositionVector) / 5.f;
+	}
 }
 

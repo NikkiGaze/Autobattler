@@ -27,4 +27,6 @@ private:
 
 	UPROPERTY()
 	FTimerHandle SimulationTimerHandle;
+
+	int Tick = 0;
 };
