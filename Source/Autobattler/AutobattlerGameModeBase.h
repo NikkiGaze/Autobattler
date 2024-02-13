@@ -19,7 +19,10 @@ public:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	TSubclassOf<AActor> UnitClass;
+	TSubclassOf<AActor> UnitTeam1Class;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> UnitTeam2Class;
 
 private:
 	UPROPERTY()

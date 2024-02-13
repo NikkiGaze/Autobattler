@@ -10,7 +10,7 @@ void AAutobattlerGameModeBase::BeginPlay()
 	Super::BeginPlay();
 	
 	VisualizationManager = Cast<AVisualizationManager>(GetWorld()->SpawnActor(AVisualizationManager::StaticClass()));
-	VisualizationManager->InitialSpawn(UnitClass);
+	VisualizationManager->InitialSpawn(UnitTeam1Class, UnitTeam2Class, TArray<FUnitDescriptor>());
 
 	GetWorldTimerManager().SetTimer(SimulationTimerHandle, [this]
 		{Tick++, VisualizationManager->OnSimulationTick(Tick);},

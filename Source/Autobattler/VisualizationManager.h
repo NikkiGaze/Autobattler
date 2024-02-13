@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UnitDescriptor.h"
 #include "GameFramework/Actor.h"
 #include "VisualizationManager.generated.h"
 
@@ -17,7 +18,9 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void InitialSpawn(TSubclassOf<AActor> UnitClass);
+	void InitialSpawn(TSubclassOf<AActor> UnitTeam1Class,
+		TSubclassOf<AActor> UnitTeam2Class,
+		const TArray<FUnitDescriptor> &UnitDescriptors);
 
 	void OnSimulationTick(int NewPosition);
 	

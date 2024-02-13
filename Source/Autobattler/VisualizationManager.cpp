@@ -21,17 +21,31 @@ void AVisualizationManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UnitActor->SetActorLocation(UnitActor->GetActorLocation() + CurrentOffsetVector * DeltaTime);
+	// UnitActor->SetActorLocation(UnitActor->GetActorLocation() + CurrentOffsetVector * DeltaTime);
 	// UE_LOG(LogTemp, Log, TEXT("%f, %f"), DeltaTime, GetWorld()->GetDeltaSeconds());
 }
 
-void AVisualizationManager::InitialSpawn(TSubclassOf<AActor> UnitClass)
+void AVisualizationManager::InitialSpawn(TSubclassOf<AActor> UnitTeam1Class,
+	TSubclassOf<AActor> UnitTeam2Class,
+	const TArray<FUnitDescriptor> &UnitDescriptors)
 {
+	for (auto &UnitDescriptor : UnitDescriptors)
+	{
+		const FVector *SpawnLocation = new FVector(UnitDescriptor.Position.X, UnitDescriptor.Position.Y, 0.f);
+		if (UnitDescriptor.Team == 1)
+		{
+			UnitActor = GetWorld()->SpawnActor(UnitTeam1Class, SpawnLocation);
+		}
+		else if (UnitDescriptor.Team == 2)
+		{
+			UnitActor = GetWorld()->SpawnActor(UnitTeam2Class, SpawnLocation);
+		}
+	}
 	// FActorSpawnParameters Params;
 	// FVector SpawnLocation = FVector(0.f, 0.f, 0.f); 
-	// FRotator SpawnRotation = FRotator(0.f, 0.f, 0.f);
+	// 
 	// GetWorld()->SpawnActor(UnitClass, SpawnLocation, SpawnRotation, Params);
-	UnitActor = GetWorld()->SpawnActor(UnitClass);
+	
 }
 
 void AVisualizationManager::OnSimulationTick(int NewPosition)
