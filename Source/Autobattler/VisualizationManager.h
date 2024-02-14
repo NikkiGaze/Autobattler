@@ -39,4 +39,7 @@ protected:
 	
 	UPROPERTY()
 	FVector CurrentOffsetVector;
+
+private:
+	static FVector CalcCellPosition(const FVector2d &Coordinates);
 };

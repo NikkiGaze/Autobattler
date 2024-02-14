@@ -31,7 +31,7 @@ void AVisualizationManager::InitialSpawn(TSubclassOf<AActor> UnitTeam1Class,
 {
 	for (auto &UnitDescriptor : UnitDescriptors)
 	{
-		const FVector *SpawnLocation = new FVector(UnitDescriptor.Position.X, UnitDescriptor.Position.Y, 0.f);
+		const FVector *SpawnLocation = new FVector(CalcCellPosition(UnitDescriptor.Position));
 		if (UnitDescriptor.Team == 1)
 		{
 			UnitActor = GetWorld()->SpawnActor(UnitTeam1Class, SpawnLocation);
@@ -65,3 +65,10 @@ void AVisualizationManager::OnSimulationTick(int NewPosition)
 	}
 }
 
+FVector AVisualizationManager::CalcCellPosition(const FVector2d &Coordinates)
+{
+	static int CellRadius = 200;
+	int X = Coordinates.X * CellRadius + Coordinates.Y * 0.5;
+	int Y = (sqrt(3) / 2) * Coordinates.Y * CellRadius;
+	return FVector(X, Y, 0);
+}
