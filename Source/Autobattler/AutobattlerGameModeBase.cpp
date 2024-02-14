@@ -2,29 +2,24 @@
 
 #include "AutobattlerGameModeBase.h"
 
+#include "SimulationManager.h"
 #include "VisualizationManager.h"
 
 
 void AAutobattlerGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FUnitDescriptor FirstUnit;
-	FirstUnit.Position = FVector2d(0, 0);
-	FirstUnit.Team = 1;
-	
-	FUnitDescriptor SecondUnit;
-	SecondUnit.Team = 2;
-	SecondUnit.Position = FVector2d(5, 5);
-	TArray<FUnitDescriptor> Units;
-	Units.Add(FirstUnit);
-	Units.Add(SecondUnit);
 	
 	VisualizationManager = Cast<AVisualizationManager>(GetWorld()->SpawnActor(AVisualizationManager::StaticClass()));
-	VisualizationManager->InitialSpawn(UnitTeam1Class, UnitTeam2Class, Units);
 
+	SimulationManager = NewObject<UFSimulationManager>();
+	FSimulationParams Params;
+	Params.TimeRate = 5.f;
+	Params.Team1StartPositions = Team1StartPositions;
+	Params.Team2StartPositions = Team2StartPositions;
+	Params.UnitTeam1Class = UnitTeam1Class;
+	Params.UnitTeam2Class = UnitTeam2Class;
 	
-	GetWorldTimerManager().SetTimer(SimulationTimerHandle, [this]
-		{Tick++, VisualizationManager->OnSimulationTick(Tick);},
-		5.f, true);
+	
+	SimulationManager->StartSimulation(VisualizationManager, Params);
 }

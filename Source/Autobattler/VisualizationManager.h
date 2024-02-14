@@ -13,7 +13,6 @@ class AUTOBATTLER_API AVisualizationManager : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	AVisualizationManager();
 
 	virtual void Tick(float DeltaTime) override;
@@ -22,24 +21,19 @@ public:
 		TSubclassOf<AActor> UnitTeam2Class,
 		const TArray<FUnitDescriptor> &UnitDescriptors);
 
-	void OnSimulationTick(int NewPosition);
-	
-	UPROPERTY()
-	AActor *UnitActor;
+	void OnSimulationTick(float TimeRate, const TArray<FUnitDescriptor> NewUnitDescriptors);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-	UPROPERTY()
-	int OldPosition;
-
-	UPROPERTY()
-	int NextPosition;
-	
-	UPROPERTY()
-	FVector CurrentOffsetVector;
 
 private:
 	static FVector CalcCellPosition(const FVector2d &Coordinates);
+	
+	inline static int CellRadius = 200;
+	
+	UPROPERTY()
+	TMap<FGuid, AActor *> UnitActorsMap;
+
+	UPROPERTY()
+	TMap<FGuid, FVector> UnitMovementVectorsMap;
 };

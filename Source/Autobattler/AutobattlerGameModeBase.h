@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "AutobattlerGameModeBase.generated.h"
 
+class UFSimulationManager;
 class AVisualizationManager;
 /**
  * 
@@ -18,18 +19,22 @@ class AUTOBATTLER_API AAutobattlerGameModeBase : public AGameModeBase
 public:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<AActor> UnitTeam1Class;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<AActor> UnitTeam2Class;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FVector2D> Team1StartPositions;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FVector2D> Team2StartPositions;
 
 private:
 	UPROPERTY()
 	AVisualizationManager *VisualizationManager;
 
 	UPROPERTY()
-	FTimerHandle SimulationTimerHandle;
-
-	int Tick = 0;
+	UFSimulationManager *SimulationManager;
 };

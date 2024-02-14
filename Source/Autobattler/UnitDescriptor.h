@@ -2,8 +2,12 @@
 
 #pragma once
 
+#include "UnitDescriptor.generated.h"
+USTRUCT()
 struct FUnitDescriptor
 {
+	GENERATED_BODY()
+	
 	FGuid Id;
 	int MaxHealth;
 	int CurrentHealth;
