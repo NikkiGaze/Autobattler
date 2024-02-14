@@ -29,10 +29,41 @@ void UFSimulationManager::StartSimulation(AVisualizationManager *InVisualization
 
 void UFSimulationManager::UpdateSimulation()
 {
-	for (FUnitDescriptor &Unit : Units)
+	// for (FUnitDescriptor &Unit : Units)
+	// {
+	// 	Unit.Position.X += Unit.MovementSpeed;
+	// 	//calc new position
+	// }
+	if (FVector2D::DistSquared(Units[0].Position, Units[1].Position) >= 64)
 	{
-		Unit.Position.X += Unit.MovementSpeed;
-		//calc new position
+		int DistX = Units[1].Position.X - Units[0].Position.X;		
+		int DistY = Units[1].Position.Y - Units[0].Position.Y;
+
+		//(DistX / DistY) / (1 + DistX / DistY)  = offset1x
+		
+		
+		int OffsetX =  Units[0].MovementSpeed * (FGenericPlatformMath::Abs((float)DistX / DistY) / (1 + FGenericPlatformMath::Abs((float)DistX / DistY))) * FGenericPlatformMath::Sign(DistX);
+		int OffsetY = (Units[0].MovementSpeed - FGenericPlatformMath::Abs(OffsetX)) * FGenericPlatformMath::Sign(DistY);
+		UE_LOG(LogTemp, Log, TEXT("%d, %d"), OffsetX, OffsetY);
+		
+		Units[0].Position.X = Units[0].Position.X + OffsetX;
+		Units[0].Position.Y = Units[0].Position.Y + OffsetY;
+
+		////
+		
+		DistX = Units[0].Position.X - Units[1].Position.X;		
+		DistY = Units[0].Position.Y - Units[1].Position.Y;
+
+		OffsetX =  Units[1].MovementSpeed * (FGenericPlatformMath::Abs((float)DistX / DistY) / (1 + FGenericPlatformMath::Abs((float)DistX / DistY))) * FGenericPlatformMath::Sign(DistX);
+		OffsetY = (Units[1].MovementSpeed - FGenericPlatformMath::Abs(OffsetX)) * FGenericPlatformMath::Sign(DistY);
+		UE_LOG(LogTemp, Log, TEXT("%d, %d"), OffsetX, OffsetY);
+		
+		Units[1].Position.X = Units[1].Position.X + OffsetX;
+		Units[1].Position.Y = Units[1].Position.Y + OffsetY;
+	}
+	else
+	{
+		//fight
 	}
 	VisualizationManager->OnSimulationTick(TimeRate, Units);
 }
