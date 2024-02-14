@@ -16,40 +16,53 @@ void UFSimulationManager::StartSimulation(AVisualizationManager *InVisualization
 
 void UFSimulationManager::UpdateSimulation()
 {
-	// for (FUnitDescriptor &Unit : Units)
-	// {
-	// 	Unit.Position.X += Unit.MovementSpeed;
-	// 	//calc new position
-	// }
-	if (FVector2D::DistSquared(Units[0].Position, Units[1].Position) >= 64)
+	for (FUnitDescriptor &Unit : Units)
 	{
-		Units[0].Position += CalcMovementVector(Units[0], Units[1]);
-		Units[1].Position += CalcMovementVector(Units[1], Units[0]);
-	}
-	else
-	{
-		//fight
+		//calc new position
+
+		if (FVector2D::DistSquared(Unit.Position, Units[Unit.TargetIndex].Position) >= 64)
+		{
+			Unit.Position += CalcMovementVector(Unit, Units[Unit.TargetIndex]);
+			// Units[1].Position += CalcMovementVector(Units[1], Units[0]);
+		}
+		else
+		{
+			//fight
+		}
 	}
 	VisualizationManager->OnSimulationTick(TimeRate, Units);
 }
 
 void UFSimulationManager::SetupUnits(const TArray<FVector2D> &Team1StartPositions, const TArray<FVector2D> &Team2StartPositions)
 {
-	int Unit1PositionIndex = RandomStream.RandRange(0, Team1StartPositions.Num() - 1);
-	int Unit2PositionIndex = RandomStream.RandRange(0, Team2StartPositions.Num() - 1);
-	
-	FUnitDescriptor FirstUnit, SecondUnit;
-	FillUnitValues(FirstUnit);
-	FillUnitValues(SecondUnit);
-	
-	FirstUnit.Position = Team1StartPositions[Unit1PositionIndex];
-	FirstUnit.Team = 1;
-	
-	SecondUnit.Team = 2;
-	SecondUnit.Position = Team2StartPositions[Unit2PositionIndex];	
+	int UnitCount = 4;
+	Units.SetNum(UnitCount);
 
-	Units.Add(FirstUnit);
-	Units.Add(SecondUnit);
+	TArray<FVector2D> UnitPositionIndexes;
+	UnitPositionIndexes.SetNum(UnitCount);
+
+
+	for (int i = 0; i < Units.Num(); i++)
+	{
+		FillUnitValues(Units[i]);
+
+		Units[i].Team = i < 2 ? 1 : 2;
+		Units[i].TargetIndex = i < 2 ? i + 2 : i - 2;
+
+		//Dont look here please ^)
+		Units[i].TargetIndex = i < 2 ? i + 2 : i - 2;
+		int PositionIndex;
+		if (i % 2 == 0)
+		{
+			PositionIndex = RandomStream.RandRange(0, (Team1StartPositions.Num() - 1) / 2);
+		}
+		else
+		{
+			PositionIndex = RandomStream.RandRange((Team1StartPositions.Num() - 1) / 2 + 1, (Team1StartPositions.Num() - 1));
+		}
+		
+		Units[i].Position = i < 2 ? Team1StartPositions[PositionIndex] : Team2StartPositions[PositionIndex];
+	}
 }
 
 void UFSimulationManager::FillUnitValues(FUnitDescriptor &Unit) const
@@ -70,9 +83,11 @@ FVector2D UFSimulationManager::CalcMovementVector(const FUnitDescriptor &Unit, c
 	//(DistX / DistY) / (1 + DistX / DistY)  = offset1x
 	//I know I can use smth like Lerp but I like math ^))
 
-	OffsetVector.X =  Unit.MovementSpeed * (FGenericPlatformMath::Abs((float)DistX / DistY) / (1 + FGenericPlatformMath::Abs((float)DistX / DistY))) * FGenericPlatformMath::Sign(DistX);
+	float Coeff = (DistY == 0) ? 1 : FGenericPlatformMath::Abs(static_cast<float>(DistX) / DistY);
+
+	OffsetVector.X =  Unit.MovementSpeed * (Coeff / (1 + Coeff)) * FGenericPlatformMath::Sign(DistX);
 	OffsetVector.Y = (Unit.MovementSpeed - FGenericPlatformMath::Abs(OffsetVector.X)) * FGenericPlatformMath::Sign(DistY);
-	// UE_LOG(LogTemp, Log, TEXT("%d, %d"), OffsetX, OffsetY);
+	UE_LOG(LogTemp, Log, TEXT("%d, %d, %f, %f"), DistX, DistY, OffsetVector.X, OffsetVector.Y);
 
 	return OffsetVector;
 }

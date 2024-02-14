@@ -25,6 +25,9 @@ struct FUnitDescriptor
 	
 	UPROPERTY()
 	int Team;
+
+	UPROPERTY()
+	int TargetIndex;
 	
 	UPROPERTY()
 	FVector2D Position;
