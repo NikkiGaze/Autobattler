@@ -18,19 +18,39 @@ void UFSimulationManager::UpdateSimulation()
 {
 	for (FUnitDescriptor &Unit : Units)
 	{
-		//calc new position
-
-		if (FVector2D::DistSquared(Unit.Position, Units[Unit.TargetIndex].Position) >= 64)
+		if (!Unit.IsAlive())
 		{
+			continue;
+		}
+
+		if (FVector2D::DistSquared(Unit.Position, Units[Unit.TargetIndex].Position) >= 64 && !Unit.AttackTargetId.IsValid())
+		{
+			//calc new position
 			Unit.Position += CalcMovementVector(Unit, Units[Unit.TargetIndex]);
-			// Units[1].Position += CalcMovementVector(Units[1], Units[0]);
 		}
 		else
 		{
 			//fight
+			if (!Units[Unit.TargetIndex].IsAlive())
+			{
+				continue;
+			}
+			
+			if (!Unit.AttackTargetId.IsValid())
+			{
+				//start attack
+				Unit.AttackTargetId = Units[Unit.TargetIndex].Id;
+				Unit.AttackStartTickNum = TickNum;
+			}
+			else if (TickNum == Unit.AttackStartTickNum + Unit.AttackSpeed)
+			{
+				Unit.AttackStartTickNum = TickNum;
+				Units[Unit.TargetIndex].CurrentHealth--;
+			}
 		}
 	}
 	VisualizationManager->OnSimulationTick(TimeRate, Units);
+	TickNum++;
 }
 
 void UFSimulationManager::SetupUnits(const TArray<FVector2D> &Team1StartPositions, const TArray<FVector2D> &Team2StartPositions)
@@ -72,6 +92,7 @@ void UFSimulationManager::FillUnitValues(FUnitDescriptor &Unit) const
 	Unit.AttackSpeed = 3;
 	Unit.MaxHealth = RandomStream.RandRange(2, 5);
 	Unit.CurrentHealth = Unit.MaxHealth;
+	Unit.AttackStartTickNum = -1;
 };
 
 FVector2D UFSimulationManager::CalcMovementVector(const FUnitDescriptor &Unit, const FUnitDescriptor &TargetUnit)

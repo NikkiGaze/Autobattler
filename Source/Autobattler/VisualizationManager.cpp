@@ -3,6 +3,8 @@
 
 #include "VisualizationManager.h"
 
+#include "UnitActorBase.h"
+
 // Sets default values
 AVisualizationManager::AVisualizationManager()
 {
@@ -45,10 +47,6 @@ void AVisualizationManager::InitialSpawn(TSubclassOf<AActor> UnitTeam1Class,
 
 		UE_LOG(LogTemp, Log, TEXT("%f"), SpawnLocation->X);
 	}
-	// FActorSpawnParameters Params;
-	// FVector SpawnLocation = FVector(0.f, 0.f, 0.f); 
-	// 
-	// GetWorld()->SpawnActor(UnitClass, SpawnLocation, SpawnRotation, Params);
 	
 }
 
@@ -57,24 +55,24 @@ void AVisualizationManager::OnSimulationTick(float TimeRate, const TArray<FUnitD
 	//Calc new position in world coordinates
 	for (const FUnitDescriptor &UnitDescriptor : NewUnitDescriptors)
 	{
+		if (!UnitActorsMap.Contains(UnitDescriptor.Id))
+		{
+			continue;
+		}
+		
 		AActor *UnitActor = UnitActorsMap.FindChecked(UnitDescriptor.Id);
 		const FVector OldPositionVector = UnitActor->GetActorLocation();
 
 		const FVector NextPositionVector = CalcCellPosition(UnitDescriptor.Position);
 		UnitMovementVectorsMap.FindChecked(UnitDescriptor.Id) = (NextPositionVector - OldPositionVector) / TimeRate;
+
+		if (!UnitDescriptor.IsAlive())
+		{
+			UnitActor->Destroy();
+			UnitActorsMap.Remove(UnitDescriptor.Id);
+			UnitMovementVectorsMap.Remove(UnitDescriptor.Id);
+		}
 	}
-	// const int CellSize = 50;
-	//
-	// OldPosition = NextPosition;
-	// NextPosition = NewPosition;
-	//
-	// if (const int CellDiff = NewPosition != OldPosition;
-	// 	CellDiff != 0)
-	// {
-	// 	const FVector OldPositionVector = FVector(CellSize * OldPosition, 0, 0);
-	// 	const FVector NewPositionVector = FVector(CellSize * NextPosition, 0, 0);
-	// 	CurrentOffsetVector = (NewPositionVector - OldPositionVector) / 5.f;
-	// }
 }
 
 FVector AVisualizationManager::CalcCellPosition(const FVector2d &Coordinates)

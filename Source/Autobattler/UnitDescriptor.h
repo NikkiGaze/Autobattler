@@ -28,6 +28,12 @@ struct FUnitDescriptor
 
 	UPROPERTY()
 	int TargetIndex;
+
+	UPROPERTY()
+	FGuid AttackTargetId;
+
+	UPROPERTY()
+	int AttackStartTickNum;
 	
 	UPROPERTY()
 	FVector2D Position;

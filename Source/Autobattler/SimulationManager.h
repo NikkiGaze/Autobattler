@@ -55,5 +55,8 @@ private:
 	UPROPERTY()
 	float TimeRate;
 
+	UPROPERTY()
+	int TickNum = 0;
+
 	FRandomStream RandomStream = FRandomStream(567);
 };
