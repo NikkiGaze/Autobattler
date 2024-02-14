@@ -23,6 +23,7 @@ void UFSimulationManager::UpdateSimulation()
 			continue;
 		}
 
+		Unit.IsAttacking = false;
 		if (FVector2D::DistSquared(Unit.Position, Units[Unit.TargetIndex].Position) >= 64 && !Unit.AttackTargetId.IsValid())
 		{
 			//calc new position
@@ -46,6 +47,7 @@ void UFSimulationManager::UpdateSimulation()
 			{
 				Unit.AttackStartTickNum = TickNum;
 				Units[Unit.TargetIndex].CurrentHealth--;
+				Unit.IsAttacking = true;
 			}
 		}
 	}
@@ -93,6 +95,7 @@ void UFSimulationManager::FillUnitValues(FUnitDescriptor &Unit) const
 	Unit.MaxHealth = RandomStream.RandRange(2, 5);
 	Unit.CurrentHealth = Unit.MaxHealth;
 	Unit.AttackStartTickNum = -1;
+	Unit.IsAttacking = false;
 };
 
 FVector2D UFSimulationManager::CalcMovementVector(const FUnitDescriptor &Unit, const FUnitDescriptor &TargetUnit)

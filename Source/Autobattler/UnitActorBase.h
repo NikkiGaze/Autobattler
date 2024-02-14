@@ -14,14 +14,16 @@ class AUTOBATTLER_API AUnitActorBase : public AActor
 public:
 	AUnitActorBase();
 
-	void StartAttack() const;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UStaticMeshComponent *StaticMeshComponent;
-	
+	void StartAttack();
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UMaterialInterface *DefaultMaterial;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UMaterialInterface *AttackMaterial;
+
+private:
+	void FinishAttack() const;
+	
+	FTimerHandle AttackAnimationTimerHandle;
 };

@@ -34,6 +34,9 @@ struct FUnitDescriptor
 
 	UPROPERTY()
 	int AttackStartTickNum;
+
+	UPROPERTY()
+	bool IsAttacking;
 	
 	UPROPERTY()
 	FVector2D Position;

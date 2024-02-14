@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "VisualizationManager.generated.h"
 
+class AUnitActorBase;
+
 UCLASS()
 class AUTOBATTLER_API AVisualizationManager : public AActor
 {
@@ -32,7 +34,7 @@ private:
 	inline static int CellRadius = 200;
 	
 	UPROPERTY()
-	TMap<FGuid, AActor *> UnitActorsMap;
+	TMap<FGuid, AUnitActorBase *> UnitActorsMap;
 
 	UPROPERTY()
 	TMap<FGuid, FVector> UnitMovementVectorsMap;

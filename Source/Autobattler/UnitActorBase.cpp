@@ -4,19 +4,25 @@
 #include "UnitActorBase.h"
 
 
-// Sets default values
 AUnitActorBase::AUnitActorBase()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
-	AddInstanceComponent(StaticMeshComponent);
 }
 
-void AUnitActorBase::StartAttack() const
+void AUnitActorBase::StartAttack()
 {
-	StaticMeshComponent->SetMaterial(0, AttackMaterial);
+	Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()))
+		->SetMaterial(0, AttackMaterial);
+
+	GetWorldTimerManager().SetTimer(AttackAnimationTimerHandle, this, &AUnitActorBase::FinishAttack,
+		0.3f);
+	
+}
+
+void AUnitActorBase::FinishAttack() const
+{
+	Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()))
+		->SetMaterial(0, DefaultMaterial);
 }
 
 

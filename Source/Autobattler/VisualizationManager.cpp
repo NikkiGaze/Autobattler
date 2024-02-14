@@ -41,7 +41,7 @@ void AVisualizationManager::InitialSpawn(TSubclassOf<AActor> UnitTeam1Class,
 	{
 		const FVector *SpawnLocation = new FVector(CalcCellPosition(UnitDescriptor.Position));
 		const TSubclassOf<AActor> UnitClass = (UnitDescriptor.Team == 1) ? UnitTeam1Class : UnitTeam2Class;
-		AActor *UnitActor = GetWorld()->SpawnActor(UnitClass, SpawnLocation);
+		AUnitActorBase *UnitActor = Cast<AUnitActorBase>(GetWorld()->SpawnActor(UnitClass, SpawnLocation));
 		UnitActorsMap.Emplace(UnitDescriptor.Id, UnitActor);
 		UnitMovementVectorsMap.Emplace(UnitDescriptor.Id, FVector());
 
@@ -60,7 +60,7 @@ void AVisualizationManager::OnSimulationTick(float TimeRate, const TArray<FUnitD
 			continue;
 		}
 		
-		AActor *UnitActor = UnitActorsMap.FindChecked(UnitDescriptor.Id);
+		AUnitActorBase *UnitActor = UnitActorsMap.FindChecked(UnitDescriptor.Id);
 		const FVector OldPositionVector = UnitActor->GetActorLocation();
 
 		const FVector NextPositionVector = CalcCellPosition(UnitDescriptor.Position);
@@ -71,6 +71,12 @@ void AVisualizationManager::OnSimulationTick(float TimeRate, const TArray<FUnitD
 			UnitActor->Destroy();
 			UnitActorsMap.Remove(UnitDescriptor.Id);
 			UnitMovementVectorsMap.Remove(UnitDescriptor.Id);
+		}
+
+		if (UnitDescriptor.AttackTargetId.IsValid()
+			&& UnitDescriptor.IsAttacking)
+		{
+			UnitActor->StartAttack();
 		}
 	}
 }
