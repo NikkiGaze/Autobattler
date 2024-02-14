@@ -22,8 +22,10 @@ void AVisualizationManager::Tick(float DeltaTime)
 
 	for (const auto &UnitActorIter : UnitActorsMap)
 	{
+		// UE_LOG(LogTemp, Log, TEXT("%f"), UnitActorIter.Value->GetActorLocation().X);
 		FVector CurrentMovementVector = UnitMovementVectorsMap.FindChecked(UnitActorIter.Key);
 		UnitActorIter.Value->SetActorLocation(UnitActorIter.Value->GetActorLocation() + CurrentMovementVector * DeltaTime);
+		// UE_LOG(LogTemp, Log, TEXT("%s"), *UnitActorIter.Value->GetName());
 	}
 	
 	// UE_LOG(LogTemp, Log, TEXT("%f, %f"), DeltaTime, GetWorld()->GetDeltaSeconds());
@@ -40,6 +42,8 @@ void AVisualizationManager::InitialSpawn(TSubclassOf<AActor> UnitTeam1Class,
 		AActor *UnitActor = GetWorld()->SpawnActor(UnitClass, SpawnLocation);
 		UnitActorsMap.Emplace(UnitDescriptor.Id, UnitActor);
 		UnitMovementVectorsMap.Emplace(UnitDescriptor.Id, FVector());
+
+		UE_LOG(LogTemp, Log, TEXT("%f"), SpawnLocation->X);
 	}
 	// FActorSpawnParameters Params;
 	// FVector SpawnLocation = FVector(0.f, 0.f, 0.f); 

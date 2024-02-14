@@ -7,15 +7,27 @@ USTRUCT()
 struct FUnitDescriptor
 {
 	GENERATED_BODY()
-	
+
+	UPROPERTY()
 	FGuid Id;
+	
+	UPROPERTY()
 	int MaxHealth;
+	
+	UPROPERTY()
 	int CurrentHealth;
+	
+	UPROPERTY()
 	int AttackSpeed;
+	
+	UPROPERTY()
 	int MovementSpeed;
+	
+	UPROPERTY()
 	int Team;
 	
-	FVector2d Position;
+	UPROPERTY()
+	FVector2D Position;
 	
 	bool IsAlive() const
 	{

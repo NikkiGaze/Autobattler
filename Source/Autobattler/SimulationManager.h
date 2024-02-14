@@ -40,6 +40,7 @@ private:
 
 	void SetupUnits(const TArray<FVector2D> &Team1StartPositions, const TArray<FVector2D> &Team2StartPositions);
 
+	void FillUnitValues(FUnitDescriptor &Unit) const; 
 	static FVector2D CalcMovementVector(const FUnitDescriptor &Unit, const FUnitDescriptor &TargetUnit);
 
 	UPROPERTY()
@@ -54,5 +55,5 @@ private:
 	UPROPERTY()
 	float TimeRate;
 
-	FRandomStream RandomStream = FRandomStream(1);
+	FRandomStream RandomStream = FRandomStream(567);
 };
