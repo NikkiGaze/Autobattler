@@ -38,6 +38,10 @@ public:
 private:
 	void UpdateSimulation();
 
+	void SetupUnits(const TArray<FVector2D> &Team1StartPositions, const TArray<FVector2D> &Team2StartPositions);
+
+	static FVector2D CalcMovementVector(const FUnitDescriptor &Unit, const FUnitDescriptor &TargetUnit);
+
 	UPROPERTY()
 	AVisualizationManager *VisualizationManager;
 	
@@ -49,4 +53,6 @@ private:
 
 	UPROPERTY()
 	float TimeRate;
+
+	FRandomStream RandomStream = FRandomStream(1);
 };

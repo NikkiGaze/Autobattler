@@ -14,7 +14,7 @@ void AAutobattlerGameModeBase::BeginPlay()
 
 	SimulationManager = NewObject<UFSimulationManager>();
 	FSimulationParams Params;
-	Params.TimeRate = 5.f;
+	Params.TimeRate = 1.f;
 	Params.Team1StartPositions = Team1StartPositions;
 	Params.Team2StartPositions = Team2StartPositions;
 	Params.UnitTeam1Class = UnitTeam1Class;
